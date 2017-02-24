@@ -1,8 +1,8 @@
-'use strict';
+'use strict'
 
-const globalHooks = require('../../../hooks');
-const hooks = require('feathers-hooks');
-const auth = require('feathers-authentication').hooks;
+const globalHooks = require('../../../hooks')
+const hooks = require('feathers-hooks')
+const auth = require('feathers-authentication').hooks
 
 exports.before = {
   all: [
@@ -10,13 +10,19 @@ exports.before = {
     auth.populateUser(),
     auth.restrictToAuthenticated()
   ],
-  find: [],
-  get: [],
+  find: [
+    auth.queryWithCurrentUser({ idField: '_id', as: 'owner' })
+  ],
+  get: [
+    auth.restrictToOwner({ ownerField: '_id' })
+  ],
   create: [],
   update: [],
   patch: [],
-  remove: []
-};
+  remove: [
+    auth.restrictToOwner({ ownerField: '_id' })
+  ]
+}
 
 exports.after = {
   all: [],
@@ -26,4 +32,4 @@ exports.after = {
   update: [],
   patch: [],
   remove: []
-};
+}
