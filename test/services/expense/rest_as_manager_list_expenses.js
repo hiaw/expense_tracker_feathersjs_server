@@ -44,7 +44,7 @@ function createManagerUser (done) {
   })
 }
 
-describe('REST as Manager expense service', () => {
+describe('REST as Manager expense list service', () => {
   before((done) => {
     date = (new Date()).getTime()
     // start the server
@@ -90,7 +90,7 @@ describe('REST as Manager expense service', () => {
     })
   })
 
-  it('should create another the expense data', (done) => {
+  it('should create an expense data', (done) => {
     // setup a request
     chai.request(app)
     // request to /store
@@ -113,48 +113,32 @@ describe('REST as Manager expense service', () => {
       })
   })
 
-  it('should not get the expense', (done) => {
+  it('user should get list of expenses', (done) => {
     // setup a request
     chai.request(app)
     // request to /store
-      .get('/expenses/' + expenseId)
+      .get('/expenses')
       .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer '.concat(token))
+      .set('Authorization', 'Bearer '.concat(userToken))
     // when finished do the following
       .end((err, res) => {
-        res.statusCode.should.equal(403)
+        res.body.should.have.property('total')
+        res.body.total.should.equal(1)
         done()
       })
   })
 
-  it('should not update the expense', (done) => {
+  it('manager should not get list of expenses', (done) => {
     // setup a request
     chai.request(app)
     // request to /store
-      .patch('/expenses/' + expenseId)
-      .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer '.concat(token))
-    // attach data to request
-      .send({
-        amount: 9.90
-      })
-    // when finished do the following
-      .end((err, res) => {
-        res.statusCode.should.equal(403)
-        done()
-      })
-  })
-
-  it('should not delete the expense', (done) => {
-    // setup a request
-    chai.request(app)
-    // request to /store
-      .delete('/expenses/' + expenseId)
+      .get('/expenses')
       .set('Accept', 'application/json')
       .set('Authorization', 'Bearer '.concat(token))
     // when finished do the following
       .end((err, res) => {
-        res.statusCode.should.equal(403)
+        res.body.should.have.property('total')
+        res.body.total.should.equal(0)
         done()
       })
   })
