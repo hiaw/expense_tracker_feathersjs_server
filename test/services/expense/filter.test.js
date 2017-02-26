@@ -102,129 +102,78 @@ describe('REST filter expense service', () => {
   })
 
   it('should get list of expenses', (done) => {
-    // setup a request
-    chai.request(app)
-    // request to /store
-      .get('/expenses')
-      .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer '.concat(token))
-    // when finished do the following
-      .end((err, res) => {
-        res.body.should.have.property('total')
-        res.body.total.should.equal(5)
-
-        res.body.should.have.property('limit')
-        res.body.limit.should.equal(25)
-
-        res.body.should.have.property('skip')
-        res.body.skip.should.equal(0)
-
-        res.body.should.have.property('data')
-        res.body.data.should.have.lengthOf(5)
+    app.service('expenses').find()
+      .then(expense => {
+        expense.total.should.equal(5)
         done()
       })
   })
 
-  it('should limit expense number', (done) => {
-    // setup a request
-    chai.request(app)
-    // request to /store
-      .get('/expenses?$limit=2&$skip=2')
-      .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer '.concat(token))
-    // when finished do the following
-      .end((err, res) => {
-        res.body.should.have.property('total')
-        res.body.total.should.equal(5)
-
-        res.body.should.have.property('limit')
-        res.body.limit.should.equal(2)
-
-        res.body.should.have.property('skip')
-        res.body.skip.should.equal(2)
-
-        res.body.should.have.property('data')
-        res.body.data.should.have.lengthOf(2)
+  it('should filter by description', (done) => {
+    app.service('expenses').find({
+      query: {
+        description: {
+          $ne: 'A'
+        }
+      }
+    })
+      .then(expense => {
+        expense.total.should.equal(4)
         done()
       })
   })
 
-  it('should filter by expense description', (done) => {
-    // setup a request
-    chai.request(app)
-    // request to /store
-      .get('/expenses?description[$ne]=A')
-      .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer '.concat(token))
-    // when finished do the following
-      .end((err, res) => {
-        res.body.should.have.property('total')
-        res.body.total.should.equal(4)
-
-        res.body.should.have.property('limit')
-        res.body.limit.should.equal(25)
-
-        res.body.should.have.property('data')
-        res.body.data.should.have.lengthOf(4)
+  it('should filter by amount', (done) => {
+    app.service('expenses').find({
+      query: {
+        amount: {
+          $lt: 21
+        }
+      }
+    })
+      .then(expense => {
+        expense.total.should.equal(2)
         done()
       })
   })
 
-  it('should filter by expense amount', (done) => {
-    // setup a request
-    chai.request(app)
-    // request to /store
-      .get('/expenses?amount[$lte]=21')
-      .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer '.concat(token))
-    // when finished do the following
-      .end((err, res) => {
-        console.log(res.body)
-        res.body.should.have.property('total')
-        res.body.total.should.equal(2)
-
-        res.body.should.have.property('limit')
-        res.body.limit.should.equal(25)
-
-        res.body.should.have.property('data')
-        res.body.data.should.have.lengthOf(2)
+  it('should limit results', (done) => {
+    app.service('expenses').find({
+      query: {
+        $limit: 2
+      }
+    })
+      .then(expense => {
+        expense.data.should.have.lengthOf(2)
         done()
       })
   })
 
-  it('should filter by expense date', (done) => {
-    // setup a request
-    let date = (new Date(2000, 2, 1)).getTime()
-    chai.request(app)
-    // request to /store
-      .get('/expenses?date[$lte]=' + date)
-      .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer '.concat(token))
-    // when finished do the following
-      .end((err, res) => {
-        res.body.should.have.property('total')
-        res.body.total.should.equal(2)
-
-        res.body.should.have.property('limit')
-        res.body.limit.should.equal(25)
-
-        res.body.should.have.property('data')
-        res.body.data.should.have.lengthOf(2)
+  it('should filter by date', (done) => {
+    app.service('expenses').find({
+      query: {
+        date: {
+          $lt: (new Date(2003, 1, 1)).getTime()
+        }
+      }
+    })
+      .then(expense => {
+        expense.total.should.equal(2)
         done()
       })
   })
 
-  it('should sort by expense date', (done) => {
-    // setup a request
-    chai.request(app)
-    // request to /store
-      .get('/expenses?$sort[date]=-1')
-      .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer '.concat(token))
-    // when finished do the following
-      .end((err, res) => {
-        res.body.data[0].amount.should.equal(100)
-        res.body.data[4].amount.should.equal(1)
+  it('should filter by date', (done) => {
+    app.service('expenses').find({
+      query: {
+        $sort: {
+          date: -1
+        }
+      }
+    })
+      .then(expense => {
+        expense.data[0].amount.should.equal(100)
+        expense.data[4].amount.should.equal(1)
         done()
       })
   })
