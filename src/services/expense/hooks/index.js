@@ -15,7 +15,7 @@ exports.before = {
   ],
   get: [
     auth.restrictToRoles({
-      roles: ['admin', 'manager'],
+      roles: ['admin'],
       ownerField: 'owner',
       owner: true
     })
@@ -23,21 +23,21 @@ exports.before = {
   create: [],
   update: [
     auth.restrictToRoles({
-      roles: ['admin', 'manager'],
+      roles: ['admin'],
       ownerField: 'owner',
       owner: true
     })
   ],
   patch: [
     auth.restrictToRoles({
-      roles: ['admin', 'manager'],
+      roles: ['admin'],
       ownerField: 'owner',
       owner: true
     })
   ],
   remove: [
     auth.restrictToRoles({
-      roles: ['admin', 'manager'],
+      roles: ['admin'],
       ownerField: 'owner',
       owner: true
     })
