@@ -88,58 +88,6 @@ describe('expense service', () => {
       done()
     })
   })
-
-  it('should post the expense data', (done) => {
-    // setup a request
-    chai.request(app)
-    // request to /store
-      .post('/expenses')
-      .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer '.concat(token))
-    // attach data to request
-      .send({
-        owner: userId,
-        date: date,
-        description: 'Something',
-        amount: 99.90,
-        comment: 'Some long comment'
-      })
-    // when finished do the following
-      .end((err, res) => {
-        res.body.should.have.property('owner')
-        res.body.owner.should.equal(userId)
-        res.body.should.have.property('date')
-        res.body.date.should.equal(date)
-        res.body.should.have.property('description')
-        res.body.description.should.equal('Something')
-        res.body.should.have.property('amount')
-        res.body.amount.should.equal(99.90)
-        res.body.should.have.property('comment')
-        res.body.comment.should.equal('Some long comment')
-        done()
-      })
-  })
-
-  it('should get list of expenses', (done) => {
-    // setup a request
-    chai.request(app)
-    // request to /store
-      .get('/expenses')
-      .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer '.concat(token))
-    // when finished do the following
-      .end((err, res) => {
-        res.body.should.have.property('total')
-        res.body.total.should.equal(2)
-        res.body.should.have.property('limit')
-        res.body.limit.should.equal(5)
-        res.body.should.have.property('skip')
-        res.body.skip.should.equal(0)
-        res.body.should.have.property('data')
-        res.body.data.should.have.lengthOf(2)
-        done()
-      })
-  })
   /* it('runs create', () => {
    *   app.service('expenses').patch({
    *     date: (new Date()).getTime(),
