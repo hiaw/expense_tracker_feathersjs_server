@@ -23,6 +23,8 @@
   },
   "dependencies": {
     "body-parser": "^1.16.1",
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
     "compression": "^1.6.2",
     "cors": "^2.8.1",
     "feathers": "^2.0.3",
