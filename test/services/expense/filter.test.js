@@ -7,7 +7,7 @@ const Expense = app.service('expenses')
 const User = app.service('users')
 const authentication = require('feathers-authentication/client')
 const bodyParser = require('body-parser')
-var token, userId, date, expenseId
+var token, userId
 
 // config for app to do authentication
 app
@@ -19,9 +19,44 @@ chai.use(chaiHttp)
 // use should
 var should = chai.should()
 
-describe('REST expense service', () => {
+function createSampleData () {
+  console.log((new Date(2000, 1, 1)).getTime())
+  Expense.create({
+    owner: userId,
+    date: (new Date(2000, 1, 1)).getTime(),
+    description: 'A',
+    amount: 1,
+    comment: 'Some long comment'
+  })
+  Expense.create({
+    owner: userId,
+    date: (new Date(2002, 2, 2)).getTime(),
+    description: 'BBBBBBBbbbb',
+    amount: 20.99
+  })
+  Expense.create({
+    owner: userId,
+    date: (new Date(2005, 5, 5)).getTime(),
+    description: 'LLLLllllllll',
+    amount: 50,
+    comment: 'Some long comment'
+  })
+  Expense.create({
+    owner: userId,
+    date: (new Date(2008, 8, 8)).getTime(),
+    description: 'OOOOoooooo',
+    amount: 80
+  })
+  Expense.create({
+    owner: userId,
+    date: (new Date(2010, 10, 10)).getTime(),
+    description: 'ZZZZzzzzz',
+    amount: 100
+  })
+}
+
+describe('REST filter expense service', () => {
   before((done) => {
-    date = (new Date()).getTime()
     // start the server
     this.server = app.listen(3030)
     // once listening do the following
@@ -47,6 +82,7 @@ describe('REST expense service', () => {
             // set token for auth in other requests
             token = res.body.token
             userId = res.body.data._id
+            createSampleData()
             done()
           })
       })
@@ -65,65 +101,6 @@ describe('REST expense service', () => {
     })
   })
 
-  it('should create the expense data', (done) => {
-    // setup a request
-    chai.request(app)
-    // request to /store
-      .post('/expenses')
-      .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer '.concat(token))
-    // attach data to request
-      .send({
-        owner: userId,
-        date: date,
-        description: 'Something',
-        amount: 99.90,
-        comment: 'Some long comment'
-      })
-    // when finished do the following
-      .end((err, res) => {
-        expenseId = res.body._id
-
-        res.body.should.have.property('owner')
-        res.body.owner.should.equal(userId)
-
-        res.body.should.have.property('date')
-        res.body.date.should.equal(date)
-
-        res.body.should.have.property('description')
-        res.body.description.should.equal('Something')
-
-        res.body.should.have.property('amount')
-        res.body.amount.should.equal(99.90)
-
-        res.body.should.have.property('comment')
-        res.body.comment.should.equal('Some long comment')
-        done()
-      })
-  })
-
-  it('should create another the expense data', (done) => {
-    // setup a request
-    chai.request(app)
-    // request to /store
-      .post('/expenses')
-      .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer '.concat(token))
-    // attach data to request
-      .send({
-        owner: userId,
-        date: date,
-        description: 'Something',
-        amount: 99.90,
-        comment: 'Some long comment'
-      })
-    // when finished do the following
-      .end((err, res) => {
-        res.body._id.should.not.equal(expenseId)
-        done()
-      })
-  })
-
   it('should get list of expenses', (done) => {
     // setup a request
     chai.request(app)
@@ -134,7 +111,7 @@ describe('REST expense service', () => {
     // when finished do the following
       .end((err, res) => {
         res.body.should.have.property('total')
-        res.body.total.should.equal(2)
+        res.body.total.should.equal(5)
 
         res.body.should.have.property('limit')
         res.body.limit.should.equal(25)
@@ -143,75 +120,111 @@ describe('REST expense service', () => {
         res.body.skip.should.equal(0)
 
         res.body.should.have.property('data')
-        res.body.data.should.have.lengthOf(2)
+        res.body.data.should.have.lengthOf(5)
         done()
       })
   })
 
-  it('should get the expense', (done) => {
+  it('should limit expense number', (done) => {
     // setup a request
     chai.request(app)
     // request to /store
-      .get('/expenses/' + expenseId)
-      .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer '.concat(token))
-    // when finished do the following
-      .end((err, res) => {
-        res.body._id.should.equal(expenseId)
-        done()
-      })
-  })
-
-  it('should update the expense', (done) => {
-    // setup a request
-    chai.request(app)
-    // request to /store
-      .patch('/expenses/' + expenseId)
-      .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer '.concat(token))
-    // attach data to request
-      .send({
-        amount: 9.90
-      })
-    // when finished do the following
-      .end((err, res) => {
-        res.body.should.have.property('description')
-        res.body.description.should.equal('Something')
-
-        res.body.should.have.property('amount')
-        res.body.amount.should.equal(9.90)
-        done()
-      })
-  })
-
-  it('should delete the expense', (done) => {
-    // setup a request
-    chai.request(app)
-    // request to /store
-      .delete('/expenses/' + expenseId)
-      .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer '.concat(token))
-    // when finished do the following
-      .end((err, res) => {
-        res.statusCode.should.equal(200)
-        done()
-      })
-  })
-
-  it('should now only give single expense', (done) => {
-    // setup a request
-    chai.request(app)
-    // request to /store
-      .get('/expenses')
+      .get('/expenses?$limit=2&$skip=2')
       .set('Accept', 'application/json')
       .set('Authorization', 'Bearer '.concat(token))
     // when finished do the following
       .end((err, res) => {
         res.body.should.have.property('total')
-        res.body.total.should.equal(1)
+        res.body.total.should.equal(5)
+
+        res.body.should.have.property('limit')
+        res.body.limit.should.equal(2)
+
+        res.body.should.have.property('skip')
+        res.body.skip.should.equal(2)
 
         res.body.should.have.property('data')
-        res.body.data.should.have.lengthOf(1)
+        res.body.data.should.have.lengthOf(2)
+        done()
+      })
+  })
+
+  it('should filter by expense description', (done) => {
+    // setup a request
+    chai.request(app)
+    // request to /store
+      .get('/expenses?description[$ne]=A')
+      .set('Accept', 'application/json')
+      .set('Authorization', 'Bearer '.concat(token))
+    // when finished do the following
+      .end((err, res) => {
+        res.body.should.have.property('total')
+        res.body.total.should.equal(4)
+
+        res.body.should.have.property('limit')
+        res.body.limit.should.equal(25)
+
+        res.body.should.have.property('data')
+        res.body.data.should.have.lengthOf(4)
+        done()
+      })
+  })
+
+  it('should filter by expense amount', (done) => {
+    // setup a request
+    chai.request(app)
+    // request to /store
+      .get('/expenses?amount[$lte]=21')
+      .set('Accept', 'application/json')
+      .set('Authorization', 'Bearer '.concat(token))
+    // when finished do the following
+      .end((err, res) => {
+        console.log(res.body)
+        res.body.should.have.property('total')
+        res.body.total.should.equal(2)
+
+        res.body.should.have.property('limit')
+        res.body.limit.should.equal(25)
+
+        res.body.should.have.property('data')
+        res.body.data.should.have.lengthOf(2)
+        done()
+      })
+  })
+
+  it('should filter by expense date', (done) => {
+    // setup a request
+    let date = (new Date(2000, 2, 1)).getTime()
+    chai.request(app)
+    // request to /store
+      .get('/expenses?date[$lte]=' + date)
+      .set('Accept', 'application/json')
+      .set('Authorization', 'Bearer '.concat(token))
+    // when finished do the following
+      .end((err, res) => {
+        res.body.should.have.property('total')
+        res.body.total.should.equal(2)
+
+        res.body.should.have.property('limit')
+        res.body.limit.should.equal(25)
+
+        res.body.should.have.property('data')
+        res.body.data.should.have.lengthOf(2)
+        done()
+      })
+  })
+
+  it('should sort by expense date', (done) => {
+    // setup a request
+    chai.request(app)
+    // request to /store
+      .get('/expenses?$sort[date]=-1')
+      .set('Accept', 'application/json')
+      .set('Authorization', 'Bearer '.concat(token))
+    // when finished do the following
+      .end((err, res) => {
+        res.body.data[0].amount.should.equal(100)
+        res.body.data[4].amount.should.equal(1)
         done()
       })
   })
