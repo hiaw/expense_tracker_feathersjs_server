@@ -11,16 +11,18 @@ exports.before = {
     auth.populateUser(),
     auth.restrictToAuthenticated(),
     auth.restrictToRoles({
-      roles: ['admin', 'manager'],
-      ownerField: '_id',
-      owner: true
+      roles: ['admin', 'manager']
     })
   ],
   get: [
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
-    auth.restrictToOwner({ ownerField: '_id' })
+    auth.restrictToRoles({
+      roles: ['admin', 'manager'],
+      ownerField: '_id',
+      owner: true
+    })
   ],
   create: [
     auth.hashPassword()
@@ -29,19 +31,31 @@ exports.before = {
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
-    auth.restrictToOwner({ ownerField: '_id' })
+    auth.restrictToRoles({
+      roles: ['admin', 'manager'],
+      ownerField: '_id',
+      owner: true
+    })
   ],
   patch: [
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
-    auth.restrictToOwner({ ownerField: '_id' })
+    auth.restrictToRoles({
+      roles: ['admin', 'manager'],
+      ownerField: '_id',
+      owner: true
+    })
   ],
   remove: [
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
-    auth.restrictToOwner({ ownerField: '_id' })
+    auth.restrictToRoles({
+      roles: ['admin', 'manager'],
+      ownerField: '_id',
+      owner: true
+    })
   ]
 }
 
