@@ -13,7 +13,7 @@ exports.before = {
     auth.restrictToRoles({
       roles: ['admin', 'manager'],
       ownerField: '_id',
-      ownder: true
+      owner: true
     })
   ],
   get: [

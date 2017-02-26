@@ -1,7 +1,6 @@
-'use strict'
-
 const chai = require('chai')
 const chaiHttp = require('chai-http')
+const assert = require('assert')
 const app = require('../../../src/app')
 const Expense = app.service('expenses')
 const User = app.service('users')
@@ -19,7 +18,33 @@ chai.use(chaiHttp)
 // use should
 var should = chai.should()
 
-describe('REST expense service', () => {
+function createAdminUser (done) {
+  User.create({
+    'email': 'resposadmin',
+    'password': 'igzSwi7*Creif4V$',
+    'roles': ['admin']
+  }, (res) => {
+    // setup a request to get authentication token
+    chai.request(app)
+    // request to /auth/local
+      .post('/auth/local')
+    // set header
+      .set('Accept', 'application/json')
+    // send credentials
+      .send({
+        'email': 'resposadmin',
+        'password': 'igzSwi7*Creif4V$'
+      })
+    // when finished
+      .end((err, res) => {
+        // set token for auth in other requests
+        token = res.body.token
+        done()
+      })
+  })
+}
+
+describe('REST as Admin expense service', () => {
   before((done) => {
     date = (new Date()).getTime()
     // start the server
@@ -28,7 +53,7 @@ describe('REST expense service', () => {
     this.server.once('listening', () => {
       // create mock user
       User.create({
-        'email': 'resposadmin',
+        'email': 'user@user.com',
         'password': 'igzSwi7*Creif4V$'
       }, (res) => {
         // setup a request to get authentication token
@@ -39,15 +64,14 @@ describe('REST expense service', () => {
           .set('Accept', 'application/json')
         // send credentials
           .send({
-            'email': 'resposadmin',
+            'email': 'user@user.com',
             'password': 'igzSwi7*Creif4V$'
           })
         // when finished
           .end((err, res) => {
             // set token for auth in other requests
-            token = res.body.token
             userId = res.body.data._id
-            done()
+            createAdminUser(done)
           })
       })
     })
@@ -63,6 +87,10 @@ describe('REST expense service', () => {
         done()
       })
     })
+  })
+
+  it('registered the expenses service', () => {
+    assert.ok(app.service('expenses'))
   })
 
   it('should create the expense data', (done) => {
@@ -124,30 +152,6 @@ describe('REST expense service', () => {
       })
   })
 
-  it('should get list of expenses', (done) => {
-    // setup a request
-    chai.request(app)
-    // request to /store
-      .get('/expenses')
-      .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer '.concat(token))
-    // when finished do the following
-      .end((err, res) => {
-        res.body.should.have.property('total')
-        res.body.total.should.equal(2)
-
-        res.body.should.have.property('limit')
-        res.body.limit.should.equal(5)
-
-        res.body.should.have.property('skip')
-        res.body.skip.should.equal(0)
-
-        res.body.should.have.property('data')
-        res.body.data.should.have.lengthOf(2)
-        done()
-      })
-  })
-
   it('should get the expense', (done) => {
     // setup a request
     chai.request(app)
@@ -194,24 +198,6 @@ describe('REST expense service', () => {
     // when finished do the following
       .end((err, res) => {
         res.statusCode.should.equal(200)
-        done()
-      })
-  })
-
-  it('should now only give single expense', (done) => {
-    // setup a request
-    chai.request(app)
-    // request to /store
-      .get('/expenses')
-      .set('Accept', 'application/json')
-      .set('Authorization', 'Bearer '.concat(token))
-    // when finished do the following
-      .end((err, res) => {
-        res.body.should.have.property('total')
-        res.body.total.should.equal(1)
-
-        res.body.should.have.property('data')
-        res.body.data.should.have.lengthOf(1)
         done()
       })
   })

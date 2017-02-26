@@ -17,8 +17,6 @@ app
   .configure(authentication())
 // use http plugin
 chai.use(chaiHttp)
-// use should
-var should = chai.should()
 
 describe('expense service', () => {
   before((done) => {

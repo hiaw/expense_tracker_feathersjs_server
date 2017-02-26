@@ -14,17 +14,33 @@ exports.before = {
     auth.queryWithCurrentUser({ idField: '_id', as: 'owner' })
   ],
   get: [
-    auth.restrictToOwner({ ownerField: '_id' })
+    auth.restrictToRoles({
+      roles: ['admin', 'manager'],
+      ownerField: 'owner',
+      owner: true
+    })
   ],
   create: [],
   update: [
-    auth.restrictToOwner({ ownerField: '_id' })
+    auth.restrictToRoles({
+      roles: ['admin', 'manager'],
+      ownerField: 'owner',
+      owner: true
+    })
   ],
   patch: [
-    auth.restrictToOwner({ ownerField: '_id' })
+    auth.restrictToRoles({
+      roles: ['admin', 'manager'],
+      ownerField: 'owner',
+      owner: true
+    })
   ],
   remove: [
-    auth.restrictToOwner({ ownerField: '_id' })
+    auth.restrictToRoles({
+      roles: ['admin', 'manager'],
+      ownerField: 'owner',
+      owner: true
+    })
   ]
 }
 
