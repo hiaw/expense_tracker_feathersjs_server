@@ -2,6 +2,7 @@
 
 const globalHooks = require('../../../hooks')
 const hooks = require('feathers-hooks')
+const commonHooks = require('feathers-hooks-common')
 const auth = require('feathers-authentication').hooks
 
 exports.before = {
@@ -20,8 +21,14 @@ exports.before = {
       owner: true
     })
   ],
-  create: [],
+  create: [
+    commonHooks.setCreatedAt('createdAt'),
+    commonHooks.setUpdatedAt('updatedAt')
+    /* hook.data.createdAt = new Date(); */
+    /* auth.restrictToOwner({ idField: 'id', ownerField: 'owner' }) */
+  ],
   update: [
+    commonHooks.setUpdatedAt('updatedAt'),
     auth.restrictToRoles({
       roles: ['admin'],
       ownerField: 'owner',
@@ -29,6 +36,7 @@ exports.before = {
     })
   ],
   patch: [
+    commonHooks.setUpdatedAt('updatedAt'),
     auth.restrictToRoles({
       roles: ['admin'],
       ownerField: 'owner',

@@ -112,6 +112,9 @@ describe('REST as Admin expense service', () => {
       .end((err, res) => {
         expenseId = res.body._id
 
+        res.body.should.have.property('createdAt')
+        res.body.should.have.property('updatedAt')
+
         res.body.should.have.property('owner')
         res.body.owner.should.equal(userId)
 

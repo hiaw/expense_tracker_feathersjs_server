@@ -105,6 +105,7 @@ describe('REST user service', () => {
     // when finished do the following
       .end((err, res) => {
         res.body.should.have.property('email')
+        res.body.should.have.property('updatedAt')
         res.body.email.should.equal('new@email.com')
         done()
       })

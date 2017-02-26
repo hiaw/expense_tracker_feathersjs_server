@@ -107,6 +107,9 @@ describe('REST as Manager expense service', () => {
       })
     // when finished do the following
       .end((err, res) => {
+        res.body.should.have.property('createdAt')
+        res.body.should.have.property('updatedAt')
+
         expenseId = res.body._id
         res.body.date.should.equal(date)
         done()

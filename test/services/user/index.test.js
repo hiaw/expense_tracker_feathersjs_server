@@ -55,12 +55,10 @@ describe('user service', function () {
   // teardown after tests
   after((done) => {
     // delete contents of menu in mongodb
-    Expense.remove(null, () => {
-      User.remove(null, () => {
-        // stop the server
-        this.server.close(function () {})
-        done()
-      })
+    User.remove(null, () => {
+      // stop the server
+      this.server.close(function () {})
+      done()
     })
   })
 
@@ -69,13 +67,14 @@ describe('user service', function () {
   })
 
   it('runs create', (done) => {
-    app.service('expenses').create({
+    app.service('users').create({
       email: 'some@email.com',
       password: 'somepassword'
-    }).then(expense => {
-      assert.ok(expense._id)
-      assert.equal(expense.email, 'some@email.com')
-      assert.equal(expense.password, 'somepassword')
+    }).then(user => {
+      assert.ok(user._id)
+      assert.ok(user.createAt)
+      assert.equal(user.email, 'some@email.com')
+      assert.equal(user.password, 'somepassword')
       done()
     })
   })

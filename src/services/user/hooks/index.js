@@ -2,6 +2,7 @@
 
 const globalHooks = require('../../../hooks')
 const hooks = require('feathers-hooks')
+const commonHooks = require('feathers-hooks-common')
 const auth = require('feathers-authentication').hooks
 
 exports.before = {
@@ -25,7 +26,9 @@ exports.before = {
     })
   ],
   create: [
-    auth.hashPassword()
+    auth.hashPassword(),
+    commonHooks.setCreatedAt('createdAt'),
+    commonHooks.setUpdatedAt('updatedAt')
   ],
   update: [
     auth.verifyToken(),
@@ -35,7 +38,8 @@ exports.before = {
       roles: ['admin', 'manager'],
       ownerField: '_id',
       owner: true
-    })
+    }),
+    commonHooks.setUpdatedAt('updatedAt')
   ],
   patch: [
     auth.verifyToken(),
@@ -45,7 +49,8 @@ exports.before = {
       roles: ['admin', 'manager'],
       ownerField: '_id',
       owner: true
-    })
+    }),
+    commonHooks.setUpdatedAt('updatedAt')
   ],
   remove: [
     auth.verifyToken(),
