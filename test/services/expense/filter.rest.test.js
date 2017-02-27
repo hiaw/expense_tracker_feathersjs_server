@@ -20,7 +20,6 @@ chai.use(chaiHttp)
 var should = chai.should()
 
 function createSampleData () {
-  console.log((new Date(2000, 1, 1)).getTime())
   Expense.create({
     owner: userId,
     date: (new Date(2000, 1, 1)).getTime(),

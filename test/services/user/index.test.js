@@ -72,9 +72,8 @@ describe('user service', function () {
       password: 'somepassword'
     }).then(user => {
       assert.ok(user._id)
-      assert.ok(user.createAt)
+      assert.ok(user.createdAt)
       assert.equal(user.email, 'some@email.com')
-      assert.equal(user.password, 'somepassword')
       done()
     })
   })
