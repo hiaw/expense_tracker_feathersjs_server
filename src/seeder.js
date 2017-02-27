@@ -1,4 +1,5 @@
 const faker = require('faker')
+const moment = require('moment')
 
 let count = 0
 
@@ -36,11 +37,17 @@ function createUser (app) {
   }
 }
 
+function generateRandomDateFromPastMonth () {
+  let millisecForAMonth = 1000 * 60 * 60 * 24 * 30
+  let millisecDiff = Math.round(millisecForAMonth * Math.random())
+  return moment(moment().valueOf() - millisecDiff).toDate()
+}
+
 function createExpensesForUser (userId, app) {
-  for (var i = 0; i < 6; i++) {
+  for (var i = 0; i < 50; i++) {
     app.service('expenses').create({
       owner: userId,
-      date: faker.date.past(),
+      date: generateRandomDateFromPastMonth(),
       description: faker.company.catchPhraseDescriptor(),
       amount: Math.round(10000 * Math.random()) / 100,
       comment: faker.lorem.sentence()
