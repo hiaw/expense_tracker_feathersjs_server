@@ -27,6 +27,7 @@
     "chai-http": "^3.0.0",
     "compression": "^1.6.2",
     "cors": "^2.8.1",
+    "faker": "^4.1.0",
     "feathers": "^2.0.3",
     "feathers-authentication": "^0.7.12",
     "feathers-configuration": "^0.3.3",
