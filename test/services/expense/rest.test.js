@@ -140,7 +140,7 @@ describe('REST expense service', () => {
         res.body.total.should.equal(2)
 
         res.body.should.have.property('limit')
-        res.body.limit.should.equal(25)
+        res.body.limit.should.equal(200)
 
         res.body.should.have.property('skip')
         res.body.skip.should.equal(0)

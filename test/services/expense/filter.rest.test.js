@@ -113,7 +113,7 @@ describe('REST filter expense service', () => {
         res.body.total.should.equal(5)
 
         res.body.should.have.property('limit')
-        res.body.limit.should.equal(25)
+        res.body.limit.should.equal(200)
 
         res.body.should.have.property('skip')
         res.body.skip.should.equal(0)
@@ -161,7 +161,7 @@ describe('REST filter expense service', () => {
         res.body.total.should.equal(4)
 
         res.body.should.have.property('limit')
-        res.body.limit.should.equal(25)
+        res.body.limit.should.equal(200)
 
         res.body.should.have.property('data')
         res.body.data.should.have.lengthOf(4)
@@ -183,7 +183,7 @@ describe('REST filter expense service', () => {
    *       res.body.total.should.equal(2)
 
    *       res.body.should.have.property('limit')
-   *       res.body.limit.should.equal(25)
+   *       res.body.limit.should.equal(200)
 
    *       res.body.should.have.property('data')
    *       res.body.data.should.have.lengthOf(2)
@@ -205,7 +205,7 @@ describe('REST filter expense service', () => {
    *       res.body.total.should.equal(2)
 
    *       res.body.should.have.property('limit')
-   *       res.body.limit.should.equal(25)
+   *       res.body.limit.should.equal(200)
 
    *       res.body.should.have.property('data')
    *       res.body.data.should.have.lengthOf(2)

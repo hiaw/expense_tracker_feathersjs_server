@@ -1,57 +1,111 @@
-# toptal_dc_expense_tracker_server
-
-> 
+# Expense Tracker Server by Daniel Chong for Toptal project interview
 
 ## About
 
-This project uses [Feathers](http://feathersjs.com). An open source web framework for building modern real-time applications.
+This feathersjs app provide the REST backend for the mobile Expense Tracker app
 
-## Getting Started
+## Prerequisite
 
-Getting up and running is as easy as 1, 2, 3.
-
-1. Make sure you have [NodeJS](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed.
-2. Install your dependencies
-    
-    ```
-    cd path/to/toptal_dc_expense_tracker_server; npm install
-    ```
-
-3. Start your app
-    
-    ```
-    npm start
-    ```
-
-## Testing
-
-Simply run `npm test` and all your tests in the `test/` directory will be run.
-
-## Scaffolding
-
-Feathers has a powerful command line interface. Here are a few things it can do:
+[Feathers](http://feathersjs.com), `node`
 
 ```
 $ npm install -g feathers-cli             # Install Feathers CLI
-
-$ feathers generate service               # Generate a new Service
-$ feathers generate hook                  # Generate a new Hook
-$ feathers generate model                 # Generate a new Model
-$ feathers help                           # Show all commands
 ```
 
-## Help
+## Get Started
+```
+yarn
+npm start
+```
 
-For more information on all the things you can do with Feathers visit [docs.feathersjs.com](http://docs.feathersjs.com).
+## Testing
+```
+npm run mocha
+```
 
-## Changelog
+## Test Result
+```
+  Feathers application tests
+    ✓ starts and shows the index page (50ms)
+      ✓ shows a 404 HTML page
+      ✓ shows a 404 JSON error without stack trace
 
-__0.1.0__
+  REST filter expense service
+    ✓ should get list of expenses (98ms)
+    ✓ should limit expense number
+    ✓ should filter by expense description
 
-- Initial release
+  REST filter expense service
+    ✓ should get list of expenses
+    ✓ should filter by description
+    ✓ should filter by amount
+    ✓ should limit results
+    ✓ should filter by date
+    ✓ should filter by date
 
-## License
+  expense service
+    ✓ registered the expenses service
+    ✓ runs create
 
-Copyright (c) 2016
+  REST expense service
+    ✓ should create the expense data
+    ✓ should create another the expense data
+    ✓ should get list of expenses
+    ✓ should get the expense
+    ✓ should update the expense
+    ✓ should delete the expense
+    ✓ should now only give single expense
 
-Licensed under the [MIT license](LICENSE).
+  REST as Admin expense service
+    ✓ registered the expenses service
+    ✓ should create the expense data
+    ✓ should create another the expense data
+    ✓ should get the expense
+    ✓ should update the expense
+    ✓ should delete the expense
+
+  REST as Admin expense list service
+    ✓ should create an expense data
+    ✓ user should get list of expenses
+    ✓ admin should get list of expenses
+
+  REST as Manager expense service
+    ✓ should create another the expense data
+    ✓ should not get the expense
+    ✓ should not update the expense
+    ✓ should not delete the expense
+
+  REST as Manager expense list service
+    ✓ should create an expense data
+    ✓ user should get list of expenses
+    ✓ manager should not get list of expenses
+
+  user service
+    ✓ registered the users service
+    ✓ runs create (106ms)
+
+  REST user service
+    ✓ should not get list of users
+    ✓ should get the user
+    ✓ should update the user
+    ✓ should delete the user
+
+  REST as Admin user service
+    ✓ registered the users service
+    ✓ should create the user data (123ms)
+    ✓ should get list of users
+    ✓ should get the user
+    ✓ should update the user
+    ✓ should delete the user
+
+  REST as Manager user service
+    ✓ registered the users service
+    ✓ should create the user data (105ms)
+    ✓ should get list of users
+    ✓ should get the user
+    ✓ should update the user
+    ✓ should delete the user
+
+
+  55 passing (5s)
+```
